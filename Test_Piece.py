@@ -5,6 +5,7 @@ import enums
 from chess_engine import game_state
 from unittest.mock import Mock
 import Piece
+import pytest
 
 
 def board(pieces):
@@ -79,7 +80,8 @@ class TestKnight(unittest.TestCase):
         expected_moves = {(1, 3), (2, 2), (1, 5), (2, 6), (4, 2), (5, 3), (4, 6), (5, 5)}
         assert set(piece_takes) == expected_moves
 
-    
+
+
 
 
 
