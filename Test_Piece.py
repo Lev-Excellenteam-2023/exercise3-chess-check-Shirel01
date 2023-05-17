@@ -45,24 +45,44 @@ class TestKnight(unittest.TestCase):
         expected_moves = []
         assert peaceful_moves == expected_moves
 
-    '''def test_get_valid_piece_takes(self):
-        knight = Piece.Knight('k', 3, 4, Player.PLAYER_1)
+    def test_get_valid_piece_takes_empty_square(self):
         game = Mock()
-        game.get_piece.return_value = Player.Player_2
-        takes_moves='''
+        game.board = board([Piece.Knight('k', 3, 4, 'white')])
+        game.get_piece.side_effect =lambda row, col: game.board[row][col] if 0 <= row < 8 and 0 <= col < 8 else None
+        game.is_valid_piece.return_value = None
+        piece_takes = game.get_piece(3, 4).get_valid_piece_takes(game)
+        assert piece_takes == []
 
-    def test_get_valid_piece_takes_occupied_squares(self):
+    def test_get_valid_piece_takes_squares_occupied_by_white_and_black(self):
         game = Mock()
-        game.board = board([Piece.Knight('k', 3, 4, 'white'), Piece.Piece('k', 2, 2, 'black'),
-                            Piece.Piece('r', 4, 2, 'black'), Piece.Piece('k', 5, 3, 'black'),
-                            Piece.Piece('k', 1, 5, 'white')])
-        mock_get_piece = Mock(side_effect=lambda row, col: game.board[row][col] if 0 <= row < 8 and 0 <= col < 8 else None)
-        game.get_piece = mock_get_piece
-        mock_is_valid = Mock(side_effect=lambda row, col: game.get_piece(row, col) is not None and game.get_piece(row, col) != Player.EMPTY)
-        game.is_valid_piece = mock_is_valid
-        peaceful_moves = game.get_piece(3, 4).get_valid_piece_takes(game) # The get_valid_piece_takes method is called on the piece at position (3, 4) using game.get_piece(3, 4).
+        game.board = board([Piece.Knight('k', 3, 4, 'white'), Piece.Piece('pawn', 2, 2, 'black'),
+                            Piece.Piece('pawn', 4, 2, 'black'), Piece.Piece('pawn', 5, 3, 'black'),
+                            Piece.Piece('pawn', 1, 5, 'white')])
+        game.get_piece.side_effect = lambda row, col: game.board[row][col] if 0 <= row < 8 and 0 <= col < 8 else None
+        game.is_valid_piece.side_effect = lambda row, col: game.get_piece(row, col) is not None and game.get_piece(row, col) != Player.EMPTY
+        valid_takes_moves = game.get_piece(3, 4).get_valid_piece_takes(game) # The get_valid_piece_takes method is called on the piece at position (3, 4) using game.get_piece(3, 4).
         expected_moves = {(2, 2), (4, 2), (5, 3)}
-        assert set(peaceful_moves) == expected_moves
+        assert set(valid_takes_moves) == expected_moves
+
+
+    def test_get_valid_piece_takes_squares_occupied_by_black(self):
+        game = Mock()
+        game.board = board([Piece.Knight('k', 3, 4, 'white'), Piece.Piece('pawn', 1, 5, 'black'),
+                            Piece.Piece('pawn', 4, 2, 'black'), Piece.Piece('pawn', 5, 3, 'black'),
+                            Piece.Piece('rook', 1, 3, 'black'), Piece.Piece('knight', 2, 2, 'black'),
+                            Piece.Piece('knight', 5, 5, 'black'), Piece.Piece('pawn', 2, 6, 'black'),
+                            Piece.Piece('pawn', 4, 6, 'black')])
+
+        game.get_piece.side_effect = lambda row, col: game.board[row][col] if 0 <= row < 8 and 0 <= col < 8 else None
+        game.is_valid_piece.side_effect = lambda row, col: game.get_piece(row, col) is not None and game.get_piece(row, col) != Player.EMPTY
+        piece_takes = game.get_piece(3, 4).get_valid_piece_takes(game)
+        expected_moves = {(1, 3), (2, 2), (1, 5), (2, 6), (4, 2), (5, 3), (4, 6), (5, 5)}
+        assert set(piece_takes) == expected_moves
+
+    
+
+
+
 
 
 
