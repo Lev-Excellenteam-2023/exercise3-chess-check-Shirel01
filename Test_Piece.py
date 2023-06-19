@@ -1,4 +1,6 @@
 import unittest
+
+import chess_engine
 from Piece import Knight
 from enums import Player
 import enums
@@ -79,6 +81,9 @@ class TestKnight(unittest.TestCase):
         piece_takes = game.get_piece(3, 4).get_valid_piece_takes(game)
         expected_moves = {(1, 3), (2, 2), (1, 5), (2, 6), (4, 2), (5, 3), (4, 6), (5, 5)}
         assert set(piece_takes) == expected_moves
+
+
+
 
 
 
