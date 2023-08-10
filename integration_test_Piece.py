@@ -1,11 +1,9 @@
 import pytest
 from pytest import fixtures
-
 import chess_engine
 from Piece import Knight, Piece
 from enums import Player
-#import unittest
-#class TestKnight(unittest.TestCase):
+
 import chess_engine
 from Piece import Knight
 from enums import Player
@@ -13,7 +11,8 @@ import enums
 from chess_engine import game_state
 from unittest.mock import Mock
 import Piece
-# @pytest --fixtures
+
+@pytest --fixtures
 def _test_get_valid_piece_moves(game):
 
     game = chess_engine.game_state()
