@@ -7,7 +7,7 @@
 #
 import chess_engine
 import pygame as py
-
+import logging
 import ai_engine
 from enums import Player
 
@@ -18,6 +18,7 @@ SQ_SIZE = HEIGHT // DIMENSION  # the size of each of the squares in the board
 MAX_FPS = 15  # FPS for animations
 IMAGES = {}  # images for the chess pieces
 colors = [py.Color("white"), py.Color("gray")]
+
 
 # TODO: AI black has been worked on. Mirror progress for other two modes
 def load_images():
@@ -86,6 +87,8 @@ def highlight_square(screen, game_state, valid_moves, square_selected):
 
 
 def main():
+    logging.basicConfig(format='[%(levelname)s] - <%(asctime)s> : %(message)s', datefmt='%d-%m-%y %H:%M:%S',
+                        level=logging.INFO)
     # Check for the number of players and the color of the AI
     human_player = ""
     while True:
@@ -125,6 +128,7 @@ def main():
         ai_move = ai.minimax_black(game_state, 3, -100000, 100000, True, Player.PLAYER_1)
         game_state.move_piece(ai_move[0], ai_move[1], True)
 
+    logging.info("The white start the game")
     while running:
         for e in py.event.get():
             if e.type == py.QUIT:
@@ -163,6 +167,12 @@ def main():
                         valid_moves = game_state.get_valid_moves((row, col))
                         if valid_moves is None:
                             valid_moves = []
+
+                    if game_state.is_turn_changed:
+                        logging.info(f"Chess count: {game_state.checks_count}")
+                        logging.info(f"Knight moves: {game_state.knight_moves}")
+                        logging.info(f"White pieces survived: {game_state.white_moves}")
+                        logging.info(f"Black pieces survived: {game_state.black_moves}")
             elif e.type == py.KEYDOWN:
                 if e.key == py.K_r:
                     game_over = False
@@ -181,12 +191,15 @@ def main():
         if endgame == 0:
             game_over = True
             draw_text(screen, "Black wins.")
+            logging.info("Black wins")
         elif endgame == 1:
             game_over = True
             draw_text(screen, "White wins.")
+            logging.info("White wins")
         elif endgame == 2:
             game_over = True
             draw_text(screen, "Stalemate.")
+            logging.info("Stalemate")
 
         clock.tick(MAX_FPS)
         py.display.flip()
